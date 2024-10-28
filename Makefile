@@ -102,6 +102,17 @@ test-install: | $(WORK_ROOT_DIR)
 # Style checks
 ##############################################################################
 
+.PHONY: style-check-ruff
+style-check-ruff: | venv
+	cd $(PY_PROJECT_NAME) && $(VENV_DIR)/bin/ruff format --diff
+
+.PHONY: style-format-ruff
+style-format-ruff: | venv
+	cd $(PY_PROJECT_NAME) && $(VENV_DIR)/bin/ruff format
+
+.PHONY: lint-check-ruff
+lint-check-ruff: | venv
+	cd $(PY_PROJECT_NAME) && $(VENV_DIR)/bin/ruff check
 
 ###############################################################################
 #                                HELP
