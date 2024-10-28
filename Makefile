@@ -35,6 +35,9 @@ VENV_PIP_INSTALL := $(VENV_PIP) install $(PIP_PROXY) --timeout 90
 VENV_PYTHON := $(VENV_DIR)/bin/python
 VENV_HATCH := $(VENV_DIR)/bin/hatch
 
+PY_PROJECT_NAME := my-project
+PY_PROJECT_VERSION := 0.0.1
+
 ##############################################################################
 # Set default goal before any targets. The default goal here is "test"
 ##############################################################################
@@ -70,6 +73,30 @@ dev-clean :
 
 .PHONY: prepare-tools
 prepare-tools : venv
+
+##############################################################################
+# Hatch Rules
+##############################################################################
+
+.PHONY: hatch-new
+hatch-new:
+	$(VENV_HATCH) new --cli -i
+
+.PHONY: hatch-build
+hatch-build:
+	cd $(PY_PROJECT_NAME) && $(VENV_HATCH) build
+
+.PHONY: hatch-test
+hatch-test:
+	cd $(PY_PROJECT_NAME) && $(VENV_HATCH) test
+
+.PHONY: test-install
+test-install: | $(WORK_ROOT_DIR)
+	rm -rf $(WORK_ROOT_DIR)/test-install
+	mkdir -p $(WORK_ROOT_DIR)/test-install
+	cd $(WORK_ROOT_DIR)/test-install && $(PYTHON_BIN) -m venv venv
+	$(WORK_ROOT_DIR)/test-install/venv/bin/pip $(PIP_PROXY) install --upgrade pip
+	$(WORK_ROOT_DIR)/test-install/venv/bin/pip $(PIP_PROXY) install $(REPO_ROOT_DIR)/$(PY_PROJECT_NAME)/dist/$(subst -,_,$(PY_PROJECT_NAME))-$(PY_PROJECT_VERSION)-py3-none-any.whl
 
 ##############################################################################
 # Style checks
