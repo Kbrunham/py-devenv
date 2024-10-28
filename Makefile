@@ -79,15 +79,15 @@ prepare-tools : venv
 ##############################################################################
 
 .PHONY: hatch-new
-hatch-new:
-	$(VENV_HATCH) new --cli -i
+hatch-new: | venv
+	$(VENV_HATCH) new --cli -i $(PY_PROJECT_NAME)
 
 .PHONY: hatch-build
-hatch-build:
+hatch-build: | venv
 	cd $(PY_PROJECT_NAME) && $(VENV_HATCH) build
 
 .PHONY: hatch-test
-hatch-test:
+hatch-test: | venv
 	cd $(PY_PROJECT_NAME) && $(VENV_HATCH) test
 
 .PHONY: test-install
